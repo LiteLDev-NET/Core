@@ -6,15 +6,110 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using LiteLoader.NET.Exceptions.EventExceptions;
 
-namespace LiteLoader.NET;
+namespace LiteLoader.NET.Event;
 
 public interface IEventListener
 {
 }
 
+[Flags]
+public enum EventPriority
+{
+    LOWEST,
+    LOW,
+    NORMAL,
+    HIGH,
+    HIGHEST,
+    MONITOR
+}
+
+[AttributeUsage(AttributeTargets.Method)]
+public class EventHandlerAttribute : System.Attribute
+{
+    public bool IgnoreCancelled
+    {
+        [return: MarshalAs(UnmanagedType.U1)]
+        get;
+        [param: MarshalAs(UnmanagedType.U1)]
+        set;
+    }
+
+    public EventPriority Priority { get; set; }
+
+    public EventHandlerAttribute()
+    {
+        Priority = EventPriority.NORMAL;
+        IgnoreCancelled = false;
+    }
+}
+
+public interface IEvent
+{
+    bool IsCancelled
+    {
+        [return: MarshalAs(UnmanagedType.U1)]
+        get;
+    }
+}
+
+
+public interface ICancellable
+{
+    bool IsCancelled
+    {
+        [param: MarshalAs(UnmanagedType.U1)]
+        set;
+    }
+}
+
+public abstract class EventBase : IEvent
+{
+    private bool isCancelled;
+
+    public virtual bool IsCancelled
+    {
+        [return: MarshalAs(UnmanagedType.U1)]
+        get
+        {
+            return isCancelled;
+        }
+        [param: MarshalAs(UnmanagedType.U1)]
+        set
+        {
+            if (!(this is ICancellable))
+            {
+                throw new CancelEventException();
+            }
+            isCancelled = value;
+        }
+    }
+
+    public void Call()
+    {
+        EventManager.CallEvent(this);
+    }
+
+    public EventBase()
+    {
+    }
+}
+
+#pragma warning disable CS8600
+#pragma warning disable CS8500
 public static class EventManager
 {
+    private const int IS_NORMAL = 0;
+    private const int IS_INSTANCE = 64;
+    private const int IS_REF = 128;
+    private const int IS_IGNORECANCELLED = 256;
+    private const int IS_INSTANCE_AND_REF = IS_INSTANCE | IS_REF;
+    private const int IS_INSTANCE_AND_IGNORECANCELLED = IS_INSTANCE | IS_IGNORECANCELLED;
+    private const int IS_REF_AND_IGNORECANCELLED = IS_REF | IS_IGNORECANCELLED;
+    private const int IS_INSTANCE_AND_REF_AND_IGNORECANCELLED = IS_INSTANCE | IS_REF | IS_IGNORECANCELLED;
+
+
     internal static readonly Dictionary<ulong, List<(IntPtr, bool, bool, bool, Type, IntPtr)>[]> eventManagerData = new();
 
     internal static readonly Dictionary<Type, ulong> eventIds = new();
@@ -23,13 +118,14 @@ public static class EventManager
 
     internal static readonly List<ulong> initializedNativeEvents = new List<ulong>();
 
-    internal static LiteLoader.Logger logger = new("LiteLoader.NET");
+    internal static Logger logger = new("LiteLoader.NET");
 
     public unsafe static void RegisterListener<TListener>() where TListener : IEventListener
     {
-        IntPtr handle = new IntPtr(GlobalClass.GetCurrentModule(Assembly.GetCallingAssembly()));
+        IntPtr handle = new IntPtr(AssemblyOwnData.GetCurrentModule(Assembly.GetCallingAssembly()));
         RegisterListener<TListener>(handle);
     }
+
 
     public static void RegisterListener<TListener>(IntPtr handle) where TListener : IEventListener
     {
@@ -89,7 +185,7 @@ public static class EventManager
                 if (parameterType.IsByRef)
                 {
                     flag = true;
-                    type = parameterType.GetElementType();
+                    type = parameterType.GetElementType()!;
                 }
                 Type[] interfaces = type.GetInterfaces();
                 int num2 = 0;
@@ -128,8 +224,9 @@ public static class EventManager
             List<(IntPtr, bool, bool, bool, Type, IntPtr)> obj = array[item3];
             IntPtr functionPointer = methodInfo2.MethodHandle.GetFunctionPointer();
             bool item4 = current.Item4;
+
             Type item5 = ((!item4) ? null : typeFromHandle);
-            (IntPtr, bool, bool, bool, Type, IntPtr) item6 = (functionPointer, current.Item3, flag, item4, item5, handle);
+            (IntPtr, bool, bool, bool, Type, IntPtr) item6 = (functionPointer, current.Item3, flag, item4, item5!, handle);
             obj.Add(item6);
             if (flag2)
             {
@@ -163,9 +260,9 @@ public static class EventManager
         }
         while (type != typeof(object))
         {
-            if (eventIds.ContainsKey(type))
+            if (eventIds.TryGetValue(type!, out ulong value))
             {
-                ulong key = eventIds[type];
+                ulong key = value;
                 while (true)
                 {
                     fixed (List<(IntPtr, bool, bool, bool, Type, IntPtr)>* pfuncs = &eventManagerData[key][0])
@@ -173,18 +270,18 @@ public static class EventManager
                         _callEvent(ev, pfuncs);
                         do
                         {
-                            type = type.BaseType;
+                            type = type!.BaseType;
                             if (!(type != typeof(EventBase)) || !(type != typeof(object)))
                             {
                                 return;
                             }
                         }
-                        while (!eventIds.ContainsKey(type));
-                        key = eventIds[type];
+                        while (!eventIds.ContainsKey(type!));
+                        key = eventIds[type!];
                     }
                 }
             }
-            type = type.BaseType;
+            type = type!.BaseType;
             if (!(type != typeof(EventBase)))
             {
                 break;
@@ -202,10 +299,10 @@ public static class EventManager
         }
         while (eventIds.ContainsValue(num2) || (byte)((num2 - 1 <= 127) ? 1u : 0u) != 0);
         eventIds.TryAdd(eventType, num2);
-        List<(IntPtr, bool, bool, bool, Type, IntPtr)>[] value = new List<(IntPtr, bool, bool, bool, Type, IntPtr)>[6] { null, null, null, null, null, null };
+        var value = new List<(IntPtr, bool, bool, bool, Type, IntPtr)>[6];
         ulong key = eventIds[eventType];
         eventManagerData.TryAdd(key, value);
-        PluginOwnData.AddRegisteredEvent((IntPtr)GlobalClass.GetCurrentModule(eventType.Assembly), eventType, num2);
+        AssemblyOwnData.AddRegisteredEvent(AssemblyOwnData.GetCurrentModule(eventType.Assembly), eventType, num2);
     }
 
     private unsafe static void _callEvent<TEvent>(TEvent ev, List<(IntPtr, bool, bool, bool, Type, IntPtr)>* pfuncs) where TEvent : IEvent
@@ -228,28 +325,28 @@ public static class EventManager
                 {
                     switch (num3)
                     {
-                        case 192:
+                        case IS_INSTANCE_AND_REF:
                             if (!ev.IsCancelled)
                             {
-                                ((delegate*<object, ref TEvent, void>)(void*)current.Item1)(Activator.CreateInstance(current.Item5), ref ev);
+                                ((delegate*<object, ref TEvent, void>)(void*)current.Item1)(Activator.CreateInstance(current.Item5)!, ref ev);
                             }
                             break;
-                        case 128:
+                        case IS_REF:
                             if (!ev.IsCancelled)
                             {
                                 ((delegate*<ref TEvent, void>)(void*)current.Item1)(ref ev);
                             }
                             break;
-                        case 64:
+                        case IS_INSTANCE:
                             if (!ev.IsCancelled)
                             {
                                 void* ptr4 = (void*)current.Item1;
                                 TEvent val5 = ev;
                                 TEvent val6 = ev;
-                                ((delegate*<object, TEvent, void>)ptr4)(Activator.CreateInstance(current.Item5), val6);
+                                ((delegate*<object, TEvent, void>)ptr4)(Activator.CreateInstance(current.Item5)!, val6);
                             }
                             break;
-                        case 0:
+                        case IS_NORMAL:
                             if (!ev.IsCancelled)
                             {
                                 void* ptr3 = (void*)current.Item1;
@@ -257,38 +354,32 @@ public static class EventManager
                                 ((delegate*<TEvent, void>)ptr3)(ev);
                             }
                             break;
-                        case 256:
+                        case IS_IGNORECANCELLED:
                             {
                                 void* ptr2 = (void*)current.Item1;
                                 TEvent val3 = ev;
                                 ((delegate*<TEvent, void>)ptr2)(ev);
                                 break;
                             }
-                        case 448:
-                            ((delegate*<object, ref TEvent, void>)(void*)current.Item1)(Activator.CreateInstance(current.Item5), ref ev);
+                        case IS_INSTANCE_AND_REF_AND_IGNORECANCELLED:
+                            ((delegate*<object, ref TEvent, void>)(void*)current.Item1)(Activator.CreateInstance(current.Item5)!, ref ev);
                             break;
-                        case 384:
+                        case IS_REF_AND_IGNORECANCELLED:
                             ((delegate*<ref TEvent, void>)(void*)current.Item1)(ref ev);
                             break;
-                        case 320:
+                        case IS_INSTANCE_AND_IGNORECANCELLED:
                             {
                                 void* ptr = (void*)current.Item1;
                                 TEvent val = ev;
                                 TEvent val2 = ev;
-                                ((delegate*<object, TEvent, void>)ptr)(Activator.CreateInstance(current.Item5), val2);
+                                ((delegate*<object, TEvent, void>)ptr)(Activator.CreateInstance(current.Item5)!, val2);
                                 break;
                             }
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (logger != null)
-                    {
-                        LiteLoader.Logger.Logger.OutputStream error = logger.error;
-                        string newLine = Environment.NewLine;
-                        string @string = string.Concat("Exception thrown when handling an event:" + newLine, ex);
-                        error.WriteLine(@string);
-                    }
+                    logger.Error.WriteLine($"Exception thrown when handling an event:{Environment.NewLine}{ex}");
                 }
             }
         }
@@ -312,7 +403,9 @@ public static class EventManager
     {
         Type typeFromHandle = typeof(TEvent);
         eventIds.Add(typeFromHandle, id);
-        List<(IntPtr, bool, bool, bool, Type, IntPtr)>[] value = new List<(IntPtr, bool, bool, bool, Type, IntPtr)>[6] { null, null, null, null, null, null };
+        List<(IntPtr, bool, bool, bool, Type, IntPtr)>[] value = new List<(IntPtr, bool, bool, bool, Type, IntPtr)>[6];
         eventManagerData.Add(id, value);
     }
 }
+#pragma warning restore CS8600
+#pragma warning restore CS8500

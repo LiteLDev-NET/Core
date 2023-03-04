@@ -17,7 +17,7 @@ public unsafe class Logger
             this.loggerId = loggerId;
         }
 
-        void WriteLine(string str)
+        public void WriteLine(string str)
         {
             fixed (char* ptr = &str.AsSpan()[0])
             {
@@ -25,12 +25,12 @@ public unsafe class Logger
             }
         }
 
-        void WriteLine(object obj)
+        public void WriteLine(object obj)
         {
             WriteLine(obj.ToString() ?? "null");
         }
 
-        void WriteLine(string format, params object[] args)
+        public void WriteLine(string format, params object[] args)
         {
             WriteLine(string.Format(format, args));
         }
@@ -40,7 +40,6 @@ public unsafe class Logger
 
     public Logger(string title)
     {
-
         fixed (char* ptr = &title.AsSpan()[0])
         {
             if (!CreateLogger(ref id, ptr))
@@ -48,6 +47,12 @@ public unsafe class Logger
                 throw new ArgumentException();
             }
         }
+
+        Debug = new(OutputStreamType.debug, id);
+        Info = new(OutputStreamType.info, id);
+        Warn = new(OutputStreamType.warn, id);
+        Error = new(OutputStreamType.error, id);
+        Fatal = new(OutputStreamType.fatal, id);
     }
 
     ~Logger()
@@ -79,4 +84,14 @@ public unsafe class Logger
             }
         }
     }
+
+    public OutputStream Debug { get; private set; }
+
+    public OutputStream Info { get; private set; }
+
+    public OutputStream Warn { get; private set; }
+
+    public OutputStream Error { get; private set; }
+
+    public OutputStream Fatal { get; private set; }
 }

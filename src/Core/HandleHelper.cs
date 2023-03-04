@@ -19,7 +19,7 @@ public partial class HandleHelper
 {
 #if (WINDOWS)
     [LibraryImport("kernel32.dll", EntryPoint = "GetModuleHandleW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
-    private static partial nint GetModuleHandle(string lpLibFileNmae);
+    public static partial nint GetModuleHandle(string lpLibFileNmae);
 #elif (LINUX)
     private static nint GetModuleHandle(string lpLibFileNmae)
     {
