@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RemoteCall\Attributes\RemoteCallValueTypeAttribute.hpp" />
+    <ClInclude Include="RemoteCall\Enums\InstanceType.hpp" />
+    <ClInclude Include="RemoteCall\Helpers\EmitHelper.hpp" />
+    <ClInclude Include="RemoteCall\Helpers\MemoryHelper.hpp" />
+    <ClInclude Include="RemoteCall\Helpers\TypeCastHelper.hpp" />
+    <ClInclude Include="RemoteCall\Helpers\TypeHelper.hpp" />
+    <ClInclude Include="RemoteCall\Interfaces\IValueType.hpp" />
+    <ClInclude Include="RemoteCall\RemoteCallAPI.hpp" />
+    <ClInclude Include="RemoteCall\Types\ArrayType.hpp" />
+    <ClInclude Include="RemoteCall\Types\BlockPosType.hpp" />
+    <ClInclude Include="RemoteCall\Types\BlockType.hpp" />
+    <ClInclude Include="RemoteCall\Types\ItemType.hpp" />
+    <ClInclude Include="RemoteCall\Types\NbtType.hpp" />
+    <ClInclude Include="RemoteCall\Types\NumberType.hpp" />
+    <ClInclude Include="RemoteCall\Types\ObjectType.hpp" />
+    <ClInclude Include="RemoteCall\Types\Value.hpp" />
+    <ClInclude Include="RemoteCall\Types\ValueType.hpp" />
+    <ClInclude Include="RemoteCall\Types\WorldPosType.hpp" />
+    <ClInclude Include="Tools\CallbackConverter.hpp" />
+    <ClInclude Include="Tools\ClassTemplate.hpp" />
+    <ClInclude Include="Tools\ClassTemplateHelper.hpp" />
+    <ClInclude Include="Tools\ClassTemplate_CriticalHandle.hpp" />
+    <ClInclude Include="Tools\ClassTemplate_SafeHandle.hpp" />
+    <ClInclude Include="Tools\clix.hpp" />
+    <ClInclude Include="Tools\PropertryHelper.hpp" />
+    <ClInclude Include="Tools\type_traits.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RemoteCall\Helpers\EmitHelper.cpp" />
+    <ClCompile Include="RemoteCall\Helpers\MemoryHelper.cpp" />
+    <ClCompile Include="RemoteCall\Helpers\TypeCastHelper.cpp" />
+    <ClCompile Include="RemoteCall\Helpers\TypeHelper.cpp" />
+    <ClCompile Include="RemoteCall\RemoteCall_basic_api.cpp" />
+    <ClCompile Include="RemoteCall\RemoteCall_ExportAs_impl.cpp" />
+    <ClCompile Include="RemoteCall\RemoteCall_ImportAs_impl.cpp" />
+    <ClCompile Include="RemoteCall\Types\ArrayType.cpp" />
+    <ClCompile Include="RemoteCall\Types\BlockPosType.cpp" />
+    <ClCompile Include="RemoteCall\Types\BlockType.cpp" />
+    <ClCompile Include="RemoteCall\Types\ItemType.cpp" />
+    <ClCompile Include="RemoteCall\Types\NbtType.cpp" />
+    <ClCompile Include="RemoteCall\Types\NumberType.cpp" />
+    <ClCompile Include="RemoteCall\Types\ObjectType.cpp" />
+    <ClCompile Include="RemoteCall\Types\Value.cpp" />
+    <ClCompile Include="RemoteCall\Types\ValueType.cpp" />
+    <ClCompile Include="RemoteCall\Types\WorldPosType.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{abeb5558-c92f-473e-8bdf-90f58bd3811c}</ProjectGuid>
+    <Keyword>NetCoreCProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>NetCore</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;LITELOADERNET_EXPORTS;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_USRDLL;_AMD64_;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ConformanceMode>false</ConformanceMode>
+      <AdditionalOptions>/utf-8 /bigobj</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)SDK\include;$(SolutionDir)SDK\include\llapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <DisableSpecificWarnings>4635;4793</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <DelayLoadDLLs>bedrock_server.dll</DelayLoadDLLs>
+      <AdditionalOptions>/IGNORE:4199 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <PreBuildEvent>
+      <Command>if not exist "$(SolutionDir)SDK\lib\bedrock_server_api.lib" goto process
+if not exist "$(SolutionDir)SDK\lib\bedrock_server_var.lib" goto process
+goto end
+
+:process
+cd /d "$(SolutionDir)\SDK\tools\"
+if exist "$(LocalDebuggerWorkingDirectory)\bedrock_server.pdb" (
+LibraryBuilder.exe -o ..\lib\ "$(LocalDebuggerWorkingDirectory)"
+) else (
+LibraryBuilder.exe -o ..\lib\
+)
+
+:end
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>if exist "$(LocalDebuggerWorkingDirectory)\plugins\LiteLoader\" (
+copy /Y "$(TargetPath)" "$(LocalDebuggerWorkingDirectory)\plugins\LiteLoader\"
+)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

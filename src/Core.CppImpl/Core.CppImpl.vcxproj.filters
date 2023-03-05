@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="RemoteCall">
+      <UniqueIdentifier>{fec0fa66-9a48-417a-a46b-eb3521561813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{b156374a-3a95-4fc0-8af6-860e34cc1b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RemoteCall\Attributes">
+      <UniqueIdentifier>{976ae7ea-1c63-4fd1-a0c9-2e09ee7a7d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RemoteCall\Enums">
+      <UniqueIdentifier>{9372fb91-6da5-4aaa-b004-40b91f99407d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RemoteCall\Helpers">
+      <UniqueIdentifier>{da461c84-0a37-49db-9576-4284c358a959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RemoteCall\Interfaces">
+      <UniqueIdentifier>{c3148c05-e95e-4a8f-a1e3-fdf62f97b462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RemoteCall\Types">
+      <UniqueIdentifier>{03c72008-0cf9-4b8f-a431-936ff9bd0cff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Tools\CallbackConverter.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\ClassTemplateHelper.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\clix.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\PropertryHelper.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\type_traits.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\ClassTemplate.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\ClassTemplate_CriticalHandle.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\ClassTemplate_SafeHandle.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\RemoteCallAPI.hpp">
+      <Filter>RemoteCall</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Attributes\RemoteCallValueTypeAttribute.hpp">
+      <Filter>RemoteCall\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Enums\InstanceType.hpp">
+      <Filter>RemoteCall\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Helpers\EmitHelper.hpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Helpers\MemoryHelper.hpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Helpers\TypeCastHelper.hpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Helpers\TypeHelper.hpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Interfaces\IValueType.hpp">
+      <Filter>RemoteCall\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\ArrayType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\BlockPosType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\BlockType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\ItemType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\NbtType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\NumberType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\ObjectType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\Value.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\ValueType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteCall\Types\WorldPosType.hpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RemoteCall\RemoteCall_basic_api.cpp">
+      <Filter>RemoteCall</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\RemoteCall_ExportAs_impl.cpp">
+      <Filter>RemoteCall</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\RemoteCall_ImportAs_impl.cpp">
+      <Filter>RemoteCall</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Helpers\EmitHelper.cpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Helpers\MemoryHelper.cpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Helpers\TypeCastHelper.cpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Helpers\TypeHelper.cpp">
+      <Filter>RemoteCall\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\ArrayType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\BlockPosType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\BlockType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\ItemType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\NbtType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\NumberType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\ObjectType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\Value.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\ValueType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteCall\Types\WorldPosType.cpp">
+      <Filter>RemoteCall\Types</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

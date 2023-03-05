@@ -7,32 +7,27 @@ using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiteLoader.NET;
+namespace LiteLoader.NET.PluginSystem;
 
-
-
-public partial class PluginSystem
+class PluginAssemblyLoadContext : AssemblyLoadContext
 {
-    class PluginAssemblyLoadContext : AssemblyLoadContext
-    {
-        private readonly AssemblyDependencyResolver resolver;
+    private readonly AssemblyDependencyResolver resolver;
 
-        public PluginAssemblyLoadContext(string pluginPath)
-        {
-            resolver = new AssemblyDependencyResolver(pluginPath);
-        }
+    public PluginAssemblyLoadContext(string pluginPath)
+    {
+        resolver = new AssemblyDependencyResolver(pluginPath);
+    }
 
 #nullable enable
-        protected override Assembly? Load(AssemblyName assemblyName)
+    protected override Assembly? Load(AssemblyName assemblyName)
+    {
+        string? assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
+        if (assemblyPath != null)
         {
-            string? assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
-            if (assemblyPath != null)
-            {
-                return LoadFromAssemblyPath(assemblyPath);
-            }
-
-            return null;
+            return LoadFromAssemblyPath(assemblyPath);
         }
+
+        return null;
     }
-#nullable disable
 }
+#nullable disable
