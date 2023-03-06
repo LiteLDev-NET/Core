@@ -19,10 +19,7 @@ public unsafe class Logger
 
         public void WriteLine(string str)
         {
-            fixed (char* ptr = &str.AsSpan()[0])
-            {
-                LoggerManager.WriteLine(loggerId, type, ptr);
-            }
+            LoggerManager.WriteLine(loggerId, type, str);
         }
 
         public void WriteLine(object obj)
@@ -30,7 +27,7 @@ public unsafe class Logger
             WriteLine(obj.ToString() ?? "null");
         }
 
-        public void WriteLine(string format, params object[] args)
+        public void WriteLine(string format, params object?[] args)
         {
             WriteLine(string.Format(format, args));
         }
@@ -40,12 +37,9 @@ public unsafe class Logger
 
     public Logger(string title)
     {
-        fixed (char* ptr = &title.AsSpan()[0])
+        if (!CreateLogger(ref id, title))
         {
-            if (!CreateLogger(ref id, ptr))
-            {
-                throw new ArgumentException();
-            }
+            throw new ArgumentException();
         }
 
         Debug = new(OutputStreamType.debug, id);
@@ -78,10 +72,7 @@ public unsafe class Logger
         }
         set
         {
-            fixed (char* ptr = &value.AsSpan()[0])
-            {
-                SetTitle(id, ptr);
-            }
+            SetTitle(id, value);
         }
     }
 

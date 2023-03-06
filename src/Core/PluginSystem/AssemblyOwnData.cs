@@ -1,5 +1,6 @@
 ﻿using LiteLoader.NET.Internal;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,11 +9,34 @@ using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiteLoader.NET;
+namespace LiteLoader.NET.PluginSystem;
 
-internal static class AssemblyOwnData
+public sealed class PluginOwnData
 {
-    static AssemblyOwnData()
+    private static readonly Dictionary<nint, PluginOwnData> Data = new();
+
+    internal static PluginOwnData? GetPluginOwnData(nint handle)
+    {
+        if (Data.TryGetValue(handle, out var pluginOwnData)) return pluginOwnData;
+        else return null;
+    }
+
+    public List<string> CustomLibPath { get; private set; } = new();
+
+    public List<(ulong, Type)> RegisteredEvent { get; private set; } = new();
+
+    internal PluginOwnData(Assembly assembly)
+    {
+        var handle = HandleHelper.GetModuleHandle(assembly.Location);
+        Data.Add(handle, this);
+    }
+}
+
+
+
+internal static class AssemblyOwnData__
+{
+    static AssemblyOwnData__()
     {
         var asm = Assembly.GetExecutingAssembly();
         ManagedAssemblyHandle.Add(asm, HandleHelper.GetModuleHandle(asm.Location));

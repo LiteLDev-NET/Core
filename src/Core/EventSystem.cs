@@ -122,7 +122,7 @@ public static class EventManager
 
     public unsafe static void RegisterListener<TListener>() where TListener : IEventListener
     {
-        IntPtr handle = new IntPtr(AssemblyOwnData.GetCurrentModule(Assembly.GetCallingAssembly()));
+        IntPtr handle = new IntPtr(AssemblyOwnData__.GetCurrentModule(Assembly.GetCallingAssembly()));
         RegisterListener<TListener>(handle);
     }
 
@@ -302,7 +302,7 @@ public static class EventManager
         var value = new List<(IntPtr, bool, bool, bool, Type, IntPtr)>[6];
         ulong key = eventIds[eventType];
         eventManagerData.TryAdd(key, value);
-        AssemblyOwnData.AddRegisteredEvent(AssemblyOwnData.GetCurrentModule(eventType.Assembly), eventType, num2);
+        AssemblyOwnData__.AddRegisteredEvent(AssemblyOwnData__.GetCurrentModule(eventType.Assembly), eventType, num2);
     }
 
     private unsafe static void _callEvent<TEvent>(TEvent ev, List<(IntPtr, bool, bool, bool, Type, IntPtr)>* pfuncs) where TEvent : IEvent

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace LiteLoader.NET.PluginSystem;
 
-public class CustomLibPathAttribute
+[AttributeUsage(AttributeTargets.Assembly)]
+public class CustomLibPathAttribute : Attribute
 {
-    string Path { get; set; }
+    public string Path { get; set; }
 
     public CustomLibPathAttribute(string path)
     {
