@@ -15,6 +15,20 @@ public sealed class PluginOwnData
 {
     private static readonly Dictionary<nint, PluginOwnData> Data = new();
 
+    internal static nint GetCurrentModule(Assembly assembly)
+    {
+        var handle = HandleHelper.GetModuleHandle(assembly);
+        if (Data.ContainsKey(handle))
+        {
+            return handle;
+        }
+        else
+        {
+            Data.Add(handle, new PluginOwnData(assembly));
+            return handle;
+        }
+    }
+
     internal static PluginOwnData? GetPluginOwnData(nint handle)
     {
         if (Data.TryGetValue(handle, out var pluginOwnData)) return pluginOwnData;

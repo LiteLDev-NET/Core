@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LiteLoader.NET.PluginSystem;
+using System.Collections.Concurrent;
 
 namespace LiteLoader.NET
 {
@@ -13,5 +10,7 @@ namespace LiteLoader.NET
         internal const string PluginsDir = "plugins";
 
         internal static string DotnetRuntimeDir = string.Empty;
+
+        internal static Dictionary<nint, PluginAssemblyLoadContext> PluginLoadContexts = new();
     }
 }

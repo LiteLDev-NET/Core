@@ -12,18 +12,27 @@ class PluginAssemblyLoadContext : AssemblyLoadContext
 {
     private readonly AssemblyDependencyResolver resolver;
 
-    internal readonly Assembly pluginAssembly;
-
     private readonly PluginOwnData data;
 
-    public PluginAssemblyLoadContext(string pluginPath)
+
+
+    internal readonly Assembly PluginAssembly;
+
+    internal readonly nint PluginHandle;
+
+    internal string PluginName { get; private set; } = string.Empty;
+
+
+    public PluginAssemblyLoadContext(string pluginPath, bool isCollectable)
+        : base(isCollectable)
     {
         resolver = new AssemblyDependencyResolver(pluginPath);
-        pluginAssembly = LoadFromAssemblyPath(pluginPath);
+        PluginAssembly = LoadFromAssemblyPath(pluginPath);
+        PluginHandle = HandleHelper.GetModuleHandle(PluginAssembly);
 
-        data = new(pluginAssembly);
+        data = new(PluginAssembly);
 
-        var attrArr = pluginAssembly.GetCustomAttributes<CustomLibPathAttribute>();
+        var attrArr = PluginAssembly.GetCustomAttributes<CustomLibPathAttribute>();
         foreach (var attr in attrArr)
         {
             if (attr is not null)
@@ -96,7 +105,6 @@ class PluginAssemblyLoadContext : AssemblyLoadContext
 
     private unsafe void RegisterCurrentPlugin(IPluginInitializer initializer, string pluginName)
     {
-        var handle = HandleHelper.GetModuleHandle(pluginAssembly);
         var version = initializer.Version;
 
         var metaData = initializer.MetaData;
@@ -122,7 +130,7 @@ class PluginAssemblyLoadContext : AssemblyLoadContext
         }
 
 
-        LLAPI.RegisterPlugin(handle, pluginName, initializer.Introduction, &version, ref args);
+        LLAPI.RegisterPlugin(PluginHandle, pluginName, initializer.Introduction, &version, ref args);
 
         if (gcHandle.IsAllocated)
             gcHandle.Free();
@@ -132,22 +140,22 @@ class PluginAssemblyLoadContext : AssemblyLoadContext
     {
         var pluginRegistered = false;
 
-        foreach (var type in pluginAssembly.GetTypes())
+        foreach (var type in PluginAssembly.GetTypes())
         {
             if (type.IsAssignableTo(typeof(IPluginInitializer)))
             {
                 var attr = type.GetCustomAttribute<PluginMainAttribute>();
                 if (attr == null)
                 {
-                    Global.logger.Warn.WriteLine(Tr("llnet.loader.loadPlugin.initializer.missingAttr"), pluginAssembly.FullName, type.FullName);
+                    Global.logger.Warn.WriteLine(Tr("llnet.loader.loadPlugin.initializer.missingAttr"), PluginAssembly.FullName, type.FullName);
                     continue;
                 }
-                var pluginName = attr.Name ?? pluginAssembly.GetName().Name ?? "NullPluginName";
+                PluginName = attr.Name ?? PluginAssembly.GetName().Name ?? "NullPluginName";
 
 
                 if (Activator.CreateInstance(type) is not IPluginInitializer initializer)
                 {
-                    Global.logger.Warn.WriteLine(Tr("llnet.loader.loadPlugin.initializer.constructionFailed"), pluginName, type.FullName);
+                    Global.logger.Warn.WriteLine(Tr("llnet.loader.loadPlugin.initializer.constructionFailed"), PluginName, type.FullName);
                     continue;
                 }
 
@@ -155,13 +163,13 @@ class PluginAssemblyLoadContext : AssemblyLoadContext
 
                 if (!pluginRegistered)
                 {
-                    RegisterCurrentPlugin(initializer, pluginName);
+                    RegisterCurrentPlugin(initializer, PluginName);
                 }
 
 
                 initializer.OnInitialize();
 
-                Global.logger.Info.WriteLine(Tr("llnet.loader.loadPlugin.initializer.succeeded"), pluginName, type.FullName);
+                Global.logger.Info.WriteLine(Tr("llnet.loader.loadPlugin.initializer.succeeded"), PluginName, type.FullName);
 
                 pluginRegistered = true;
             }

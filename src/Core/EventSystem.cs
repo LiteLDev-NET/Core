@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using LiteLoader.NET.Exceptions.EventExceptions;
+using LiteLoader.NET.PluginSystem;
 
 namespace LiteLoader.NET.Event;
 
@@ -51,6 +52,11 @@ public interface IEvent
     {
         [return: MarshalAs(UnmanagedType.U1)]
         get;
+    }
+
+    void Call()
+    {
+        EventManager.CallEvent(this);
     }
 }
 
@@ -122,7 +128,7 @@ public static class EventManager
 
     public unsafe static void RegisterListener<TListener>() where TListener : IEventListener
     {
-        IntPtr handle = new IntPtr(AssemblyOwnData__.GetCurrentModule(Assembly.GetCallingAssembly()));
+        IntPtr handle = new IntPtr(PluginOwnData.GetCurrentModule(Assembly.GetCallingAssembly()));
         RegisterListener<TListener>(handle);
     }
 
