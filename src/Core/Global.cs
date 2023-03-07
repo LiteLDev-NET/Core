@@ -11,6 +11,8 @@ namespace LiteLoader.NET
 
         internal static string DotnetRuntimeDir = string.Empty;
 
+        internal static string DotnetRuntimeSharedLibDir = string.Empty;
+
         internal static Dictionary<nint, PluginAssemblyLoadContext> PluginLoadContexts = new();
     }
 }

@@ -91,14 +91,18 @@ class PluginAssemblyLoadContext : AssemblyLoadContext
             }
         }
 
-        var dotnetLibPath = Path.Combine(Global.DotnetRuntimeDir, assemblyName.Name + ".dll");
-        if (File.Exists(dotnetLibPath))
+        if (!string.IsNullOrWhiteSpace(Global.DotnetRuntimeDir))
         {
-            if (MetadataReader.GetAssemblyName(dotnetLibPath).Version != assemblyName.Version)
-                return (ResolveAssemblyPathResults.IncompatibleVersion, dotnetLibPath);
-            else
-                return (ResolveAssemblyPathResults.Succeeded, dotnetLibPath);
+            var dotnetLibPath = Path.Combine(Global.DotnetRuntimeDir, assemblyName.Name + ".dll");
+            if (File.Exists(dotnetLibPath))
+            {
+                if (MetadataReader.GetAssemblyName(dotnetLibPath).Version != assemblyName.Version)
+                    return (ResolveAssemblyPathResults.IncompatibleVersion, dotnetLibPath);
+                else
+                    return (ResolveAssemblyPathResults.Succeeded, dotnetLibPath);
+            }
         }
+
 
         return (ResolveAssemblyPathResults.Failed, string.Empty);
     }

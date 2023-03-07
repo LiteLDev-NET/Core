@@ -29,7 +29,8 @@ public unsafe class Logger
 
         public void WriteLine(string format, params object?[] args)
         {
-            WriteLine(string.Format(format, args));
+            //WriteLine(string.Format(format, args));
+            WriteLine(format);
         }
     }
 
