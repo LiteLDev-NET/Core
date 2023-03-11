@@ -3,25 +3,29 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>none</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <RootNamespace>LiteLoader.NET</RootNamespace>
     <AssemblyName>LiteLoader.NET.Core</AssemblyName>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="LiteLoader.InterfaceAPI.Interop">
       <HintPath>..\..\modules\InterfaceAPI.Interop\LiteLoader.InterfaceAPI.Interop.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="LiteLoader.NET.CppStd">
       <HintPath>..\..\modules\CppStd\LiteLoader.NET.CppStd.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="LiteLoader.NET.InteropServices">
       <HintPath>..\..\modules\InteropServices\LiteLoader.NET.InteropServices.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="LiteLoader.NET.InteropServices.Native">
       <HintPath>..\..\modules\InteropServices\LiteLoader.NET.InteropServices.Native.dll</HintPath>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
 
